@@ -1,0 +1,192 @@
+{
+  pkgs,
+  gnomeExtensions,
+  ...
+}:
+let
+  light_wp = builtins.fetchurl {
+    url = "https://raw.githubusercontent.com/LPbigFish/nixos/refs/heads/main/.github/images/image_uw.jpg";
+    sha256 = "0n20194xkwhlbizyva43698q0mmgdpdwrgrv3hmi7zbmx0lskrwc";
+  };
+  dark_wp = builtins.fetchurl {
+    url = "https://raw.githubusercontent.com/LPbigFish/nixos/refs/heads/main/.github/images/image_dark_uw.jpg";
+    sha256 = "0y3wcdp954j3kc0wxg56mc5kmi5h8xpw1pv7vrq9qb60khw22h1m";
+  };
+in
+{
+
+  imports = [
+    ./dconf.nix
+  ];
+
+  home.username = "lpbigfish";
+  home.homeDirectory = "/home/lpbigfish";
+  home.enableNixpkgsReleaseCheck = false;
+  home.stateVersion = "25.05";
+
+  home.packages =
+    (with pkgs; [
+      # (discord.override {
+      #   #        withOpenASAR = true;
+      #   withVencord = true;
+      # })
+      zsh-powerlevel10k
+      gnome-tweaks
+      libreoffice-qt
+      hunspell
+      hunspellDicts.cs_CZ
+      hunspellDicts.en_US
+      pavucontrol
+      audacity
+      qbittorrent
+      qdirstat
+      obsidian
+      opencode
+      postman
+      codex
+      (vivaldi.override {
+        proprietaryCodecs = true;
+        enableWidevine = true;
+      })
+      gimp
+      beeper
+    ])
+    ++ (with pkgs.jetbrains; [
+      idea
+    ])
+    ++ gnomeExtensions.extensions;
+
+  gtk = {
+    enable = true;
+    iconTheme = {
+      name = "Papirus";
+      package = pkgs.papirus-icon-theme;
+    };
+    gtk4.theme = null;
+    theme = {
+      name = "Orchis";
+      package = pkgs.orchis-theme.override {
+        tweaks = [
+          "black"
+          "primary"
+          "compact"
+          "dock"
+        ];
+      };
+    };
+  };
+
+  programs = {
+    vscode = {
+      enable = true;
+      package = pkgs.vscode;
+    };
+    zed-editor = {
+      enable = true;
+      extensions = [
+        "nix"
+        "elixir"
+        "haskell"
+      ];
+    };
+    eza = {
+      enable = true;
+      enableZshIntegration = true;
+    };
+    gnome-shell = {
+      enable = true;
+    };
+    git = {
+      enable = true;
+      settings.user = {
+        email = "lpbyblock@gmail.com";
+        name = "LPbigFish";
+      };
+    };
+    zsh = {
+      enable = true;
+      syntaxHighlighting.enable = true;
+      autosuggestion.enable = true;
+      shellAliases = {
+        ls = "eza";
+      };
+      initContent = ''
+        [[ -r /run/secrets/z-ai-env ]] && { set -a; source /run/secrets/z-ai-env; set +a; }
+        source ${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k/powerlevel10k.zsh-theme
+          [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+          # General
+          POWERLEVEL9K_BACKGROUND='#F7F7F7'
+          POWERLEVEL9K_FOREGROUND='#1C1C1C'
+
+          # OS logo
+          POWERLEVEL9K_OS_ICON_BACKGROUND='#FFFFFF'
+          POWERLEVEL9K_OS_ICON_FOREGROUND='#1C1C1C'
+
+          # Directory
+          POWERLEVEL9K_DIR_BACKGROUND='#FFFFFF'
+          POWERLEVEL9K_DIR_FOREGROUND='#1C1C1C'
+          POWERLEVEL9K_DIR_ANCHOR_FOREGROUND='#1C1C1C'
+
+          # VCS (git)
+          POWERLEVEL9K_VCS_CLEAN_BACKGROUND='#E8E8E8'
+          POWERLEVEL9K_VCS_CLEAN_FOREGROUND='#1C1C1C'
+          POWERLEVEL9K_VCS_UNTRACKED_BACKGROUND='#E8E8E8'
+          POWERLEVEL9K_VCS_UNTRACKED_FOREGROUND='#7F7F7F'
+          POWERLEVEL9K_VCS_MODIFIED_BACKGROUND='#E8E8E8'
+          POWERLEVEL9K_VCS_MODIFIED_FOREGROUND='#7F7F7F'
+
+          # Status segment
+          POWERLEVEL9K_STATUS_OK_BACKGROUND='#FFFFFF'
+          POWERLEVEL9K_STATUS_OK_FOREGROUND='#7F7F7F'
+      '';
+    };
+    alacritty = {
+      enable = true;
+      theme = "one_dark";
+      settings = {
+        keyboard.bindings = [
+          {
+            key = "N";
+            mods = "Control|Shift";
+            action = "CreateNewWindow";
+          }
+        ];
+        window = {
+          opacity = 0.9;
+        };
+        font = {
+          size = 9;
+        };
+      };
+    };
+  };
+
+  dconf = {
+    enable = true;
+    settings = {
+      "org/gnome/shell" = {
+        disable-user-extensions = false;
+        enabled-extensions = gnomeExtensions.extensionUuidList;
+      };
+
+      "org/gnome/desktop/interface".color-scheme = "prefer-dark";
+      "org/gnome/desktop/background" = {
+        picture-uri = "file://${light_wp}";
+        picture-uri-dark = "file://${dark_wp}";
+      };
+    };
+  };
+
+  home.file = {
+    ".p10k.zsh".source = ../modules/.p10k.zsh;
+  };
+
+  home.sessionVariables = {
+    EDITOR = "nvim";
+    SOPS_EDITOR = "nvim";
+  };
+
+  # Let Home Manager install and manage itself.
+  programs.home-manager.enable = true;
+}
