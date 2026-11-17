@@ -9,6 +9,10 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "home-nixpkgs";
     };
+    nix-darwin = {
+      url = "github:nix-darwin/nix-darwin";
+      inputs.nixpkgs.follows = "home-nixpkgs";
+    };
     dedsec-grub-theme = {
       url = "github:LPbigFish/dedsec-grub2-theme";
     };
@@ -37,6 +41,14 @@
       };
     in
     {
+      darwinConfigurations.macbook = inputs.nix-darwin.lib.darwinSystem {
+        specialArgs = { inherit inputs; };
+        modules = [
+          ./darwin.nix
+          inputs.home-manager.darwinModules.home-manager
+        ];
+      };
+
       nixosConfigurations.m1 = nixpkgs.lib.nixosSystem {
 
         inherit system pkgs;
