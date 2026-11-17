@@ -48,7 +48,7 @@
         ];
       };
 
-      homeConfigurations.m1 = inputs.home-manager.lib.homeManagerConfiguration {
+      homeConfigurations.lpbigfish = inputs.home-manager.lib.homeManagerConfiguration {
         pkgs = homePkgs;
         extraSpecialArgs = {
           inherit inputs;

@@ -51,9 +51,11 @@
 
   networking.hostName = "DESKTOP-349210";
 
-  networking.networkmanager.enable = true;
-  networking.networkmanager.wifi.backend = "iwd";
-
+  networking.networkmanager = {
+    enable = true;
+    # defaulted to wpa_sup.. eduroam is kind of crazy on iwd
+    # wifi.backend = "iwd";
+  };
   time.timeZone = "Europe/Prague";
 
   services.printing.enable = true;
@@ -116,7 +118,6 @@
     nixd
     zip
     unzip
-    rar
     podman-compose
   ];
 

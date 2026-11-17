@@ -89,7 +89,7 @@
     "home-manager": {
       "inputs": {
         "nixpkgs": [
-          "nixpkgs"
+          "home-nixpkgs"
         ]
       },
       "locked": {
@@ -103,6 +103,22 @@
       "original": {
         "owner": "nix-community",
         "repo": "home-manager",
+        "type": "github"
+      }
+    },
+    "home-nixpkgs": {
+      "locked": {
+        "lastModified": 1794537146,
+        "narHash": "sha256-Wpz/7x/YWnDIBu7yj6ixe8j6fIMsidd9Y+o1PqPF3iM=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "d5cc6833999746cffdfe0598f7bc801a57b887a9",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixos-unstable",
+        "repo": "nixpkgs",
         "type": "github"
       }
     },
@@ -191,6 +207,7 @@
         "apple-silicon": "apple-silicon",
         "dedsec-grub-theme": "dedsec-grub-theme",
         "home-manager": "home-manager",
+        "home-nixpkgs": "home-nixpkgs",
         "nixpkgs": [
           "apple-silicon",
           "nixpkgs"
