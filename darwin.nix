@@ -94,6 +94,7 @@ in
         stateVersion = "26.11";
         packages = with pkgs; [
           neovim.neovim
+          opencode
           zsh-powerlevel10k
           nixfmt
           nixd
