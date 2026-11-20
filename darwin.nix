@@ -77,7 +77,6 @@ in
       cleanup = "none";
     };
     casks = [
-      "alacritty"
       "zed"
       "raycast"
       "rectangle"
@@ -151,7 +150,7 @@ in
         };
         alacritty = {
           enable = true;
-          package = null; # Installed as a native application by Homebrew.
+          package = pkgs.alacritty;
           settings = {
             general.import = [ "${pkgs.alacritty-theme}/share/alacritty-theme/one_dark.toml" ];
             window.opacity = 0.9;
