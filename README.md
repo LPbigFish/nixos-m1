@@ -35,7 +35,7 @@ agent that applies the existing dark wallpaper at login. Both wallpaper variants
 are also linked under `~/.local/share/wallpapers`. Zsh/Powerlevel10k, the existing
 Neovim configuration (without Linux clipboard tools), direnv, Meslo Nerd Font,
 and One Dark Alacritty/Zed settings provide the familiar development environment.
-GUI apps come from Homebrew; Nix/Home Manager manage CLI tools and configuration.
+Alacritty is installed and managed by Nix; the other GUI apps come from Homebrew.
 Homebrew activation does not auto-update, upgrade, or remove unrelated packages;
 cask versions are not pinned by `flake.lock`.
 
