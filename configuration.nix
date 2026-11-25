@@ -19,8 +19,11 @@
 
   hardware.asahi = {
     enable = true;
-    peripheralFirmwareDirectory = ./vendorfw;
+    # Aurora reads this Mac's firmware.cpio from the booted ESP at runtime.
+    extractPeripheralFirmware = false;
   };
+  # Keep the known-working ESP firmware unchanged during the boot-chain migration.
+  aurora.wifiFirmware.followMacOS = false;
   hardware.apple.touchBar.enable = true;
   boot.extraModprobeConfig = ''
     options hid_apple iso_layout=1 fnmode=2 swap_opt_cmd=1 swap_fn_leftctrl=1
@@ -119,6 +122,7 @@
     zip
     unzip
     podman-compose
+    openssl
   ];
 
   fileSystems = {

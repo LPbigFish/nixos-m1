@@ -8,9 +8,10 @@
     nh = {
       enable = true;
       clean = {
-        enable = true;
+        # Keep recovery generations throughout the Asahi -> Aurora migration.
+        enable = false;
         dates = "daily";
-        extraArgs = "--keep 1 --no-gcroots";
+        extraArgs = "--keep 10 --keep-since 30d --no-gcroots";
       };
       flake = "/etc/nixos";
     };
@@ -25,7 +26,7 @@
   };
 
   environment.shellAliases = {
-    nhclean = "nh clean all -k 1 --no-gcroots";
+    nhclean = "nh clean all --keep 10 --keep-since 30d --no-gcroots";
   };
 
   services.timesyncd.enable = lib.mkDefault true;

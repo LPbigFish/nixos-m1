@@ -4,6 +4,12 @@ The existing Linux targets remain `nixosConfigurations.m1` and
 `homeConfigurations.lpbigfish`. The Apple Silicon macOS target is
 `darwinConfigurations.macbook`, configured in [`darwin.nix`](./darwin.nix).
 
+## Aurora migration
+
+The M1/J293 migration, activation prerequisites, and separate kernel/Stage 2
+recovery procedures are recorded in [AURORA-MIGRATION.md](./AURORA-MIGRATION.md).
+Building `result-aurora` does not install boot files or activate the system.
+
 ## macOS setup
 
 1. Install Nix with flakes enabled and install [Homebrew](https://brew.sh/)

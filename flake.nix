@@ -2,8 +2,9 @@
   description = "A very basic flake";
 
   inputs = {
-    apple-silicon.url = "github:nix-community/nixos-apple-silicon";
-    nixpkgs.follows = "apple-silicon/nixpkgs";
+    aurora.url = "github:aurora-silicon/nixos-aurora/channel-testing";
+    apple-silicon.follows = "aurora/apple-silicon";
+    nixpkgs.follows = "aurora/nixpkgs";
     home-nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     home-manager = {
       url = "github:nix-community/home-manager";
@@ -30,11 +31,6 @@
         (import ./overlays/generic-overlay.nix)
         inputs.vim-conf.overlays.default
       ];
-      pkgs = import nixpkgs {
-        inherit system;
-        config.allowUnfree = true;
-        inherit overlays;
-      };
       homePkgs = import home-nixpkgs {
         inherit system overlays;
         config.allowUnfree = true;
@@ -50,13 +46,32 @@
       };
 
       nixosConfigurations.m1 = nixpkgs.lib.nixosSystem {
-
-        inherit system pkgs;
+        inherit system;
 
         modules = [
           inputs.apple-silicon.nixosModules.default
+          inputs.aurora.nixosModules.default
+          inputs.aurora.nixosModules.installed
+
           inputs.dedsec-grub-theme.nixosModule
           ./configuration.nix
+
+          {
+            nixpkgs.overlays = [
+              inputs.apple-silicon.overlays.default
+              inputs.aurora.overlays.default
+            ]
+            ++ overlays;
+
+            nixpkgs.config.allowUnfree = true;
+
+            aurora.desktop = "gnome";
+            aurora.update.flake = "/etc/nixos#m1";
+            aurora.stage2.requiredBoards = [ "j293" ];
+
+            boot.loader.grub.timeoutStyle = "menu";
+            boot.loader.timeout = 10;
+          }
         ];
       };
 
