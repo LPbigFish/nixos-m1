@@ -169,15 +169,27 @@ Wi-Fi, Bluetooth, speakers, camera, suspend, or Touch ID work after reboot.
   `083acc496441fa38613446c4d5b7084770455f97db165efa0ce6653ce18747e6`.
   The locked updater's read-only DT ABI precheck passes against the real retained
   generation, using a lock file in the recovery directory and no ESP writes.
-- Full system build completion is recorded separately after the build finishes.
+- Full system build succeeds with output link `/etc/nixos/result-aurora`:
+  `/nix/store/7bqqjqmkhdf9gmdrlw7pc2ngg74f7af4-nixos-system-DESKTOP-349210-26.11.20261103.1d06008`.
+  A fresh evaluation selects that same output, and the final dry run requires
+  no further builds or downloads. The build log records 359 local derivations,
+  including configuration generation, uncached GNOME dependencies, and external
+  Xbox modules; it records no kernel or Mesa recompilation.
+- The built updater's read-only DT ABI check also passes with the actual built
+  toplevel included alongside retained Asahi generation 13.
+- `/run/current-system`, `/run/booted-system`, and the system profile still
+  select the original Asahi closure. Original Stage 2, EFI loader, and firmware
+  hashes remain unchanged. Nothing has been activated or installed to the ESP.
 
 ## Activation: not performed
 
 **Stop until ESP space is resolved.** Inspection found only 36 MiB free on the
 476-MiB ESP. Retaining Asahi while copying Aurora's kernel/initrd and staging
 Stage 2 requires more space. Do not rely on GRUB pruning files midway through
-installation. Keep a conservative 120 MiB free for the first installation and
-check the built artifact sizes.
+installation. The built kernel is 34,114,048 bytes, initrd 54,381,210 bytes,
+and Stage 2 16,644,821 bytes. Adding a copy of the old 12,339,306-byte Stage 2
+and 16 MiB for overhead gives a conservative additional-space budget of
+128.04 MiB. Aim for at least **129 MiB free** before the first installation.
 
 There are about 93 MiB of legacy systemd-boot images in `/boot/EFI/nixos`,
 separate from the working GRUB images in `/boot/kernels`. Offloading obsolete
@@ -196,6 +208,14 @@ generation. They are preserved in `esp.tar`. Verify the backup and an external
 recovery copy **before** any such action. No ESP files or system generations
 were removed during this task. Do not delete `/boot/vendorfw`,
 `/boot/asahi`, the working GRUB kernels, or either original Stage 2 copy.
+
+The optional `/boot/.Spotlight-V100` directory is approximately 2 MiB of macOS
+search-index metadata, not a boot component. It is also in `esp.tar`; removing
+it after the two orphaned images would exceed the 129-MiB target. macOS may
+recreate it when the ESP is mounted there. This is a separate, optional cleanup
+action, not something performed during the build. Do not remove the entire
+`EFI/nixos` directory: its `.extra-files` directory contains boot-file tracking
+metadata.
 
 Before installing, confirm the identity again:
 
