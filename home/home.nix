@@ -26,10 +26,6 @@ in
 
   home.packages =
     (with pkgs; [
-      # (discord.override {
-      #   #        withOpenASAR = true;
-      #   withVencord = true;
-      # })
       zsh-powerlevel10k
       gnome-tweaks
       libreoffice-qt
@@ -115,20 +111,16 @@ in
         source ${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k/powerlevel10k.zsh-theme
           [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-          # General
           POWERLEVEL9K_BACKGROUND='#F7F7F7'
           POWERLEVEL9K_FOREGROUND='#1C1C1C'
 
-          # OS logo
           POWERLEVEL9K_OS_ICON_BACKGROUND='#FFFFFF'
           POWERLEVEL9K_OS_ICON_FOREGROUND='#1C1C1C'
 
-          # Directory
           POWERLEVEL9K_DIR_BACKGROUND='#FFFFFF'
           POWERLEVEL9K_DIR_FOREGROUND='#1C1C1C'
           POWERLEVEL9K_DIR_ANCHOR_FOREGROUND='#1C1C1C'
 
-          # VCS (git)
           POWERLEVEL9K_VCS_CLEAN_BACKGROUND='#E8E8E8'
           POWERLEVEL9K_VCS_CLEAN_FOREGROUND='#1C1C1C'
           POWERLEVEL9K_VCS_UNTRACKED_BACKGROUND='#E8E8E8'
@@ -136,7 +128,6 @@ in
           POWERLEVEL9K_VCS_MODIFIED_BACKGROUND='#E8E8E8'
           POWERLEVEL9K_VCS_MODIFIED_FOREGROUND='#7F7F7F'
 
-          # Status segment
           POWERLEVEL9K_STATUS_OK_BACKGROUND='#FFFFFF'
           POWERLEVEL9K_STATUS_OK_FOREGROUND='#7F7F7F'
       '';
@@ -166,11 +157,9 @@ in
     enable = true;
     settings = {
       "org/gnome/shell" = {
-        disable-user-extensions = false;
         enabled-extensions = gnomeExtensions.extensionUuidList;
       };
 
-      "org/gnome/desktop/interface".color-scheme = "prefer-dark";
       "org/gnome/desktop/background" = {
         picture-uri = "file://${light_wp}";
         picture-uri-dark = "file://${dark_wp}";
@@ -187,6 +176,5 @@ in
     SOPS_EDITOR = "nvim";
   };
 
-  # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
 }

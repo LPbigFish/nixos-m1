@@ -1,32 +1,21 @@
 {
-  config,
-  lib,
+  inputs,
   pkgs,
   ...
 }:
 
 {
   imports = [
+    inputs.dedsec-grub-theme.nixosModule
+    ./modules/asahi.nix
     ./modules/master.nix
     ./modules/gnome.nix
     ./hardware-configuration.nix
   ];
 
-  nix.settings.experimental-features = [
-    "nix-command"
-    "flakes"
-  ];
-
-  hardware.asahi = {
-    enable = true;
-    peripheralFirmwareDirectory = ./vendorfw;
-  };
-  hardware.apple.touchBar.enable = true;
-  boot.extraModprobeConfig = ''
-    options hid_apple iso_layout=1 fnmode=2 swap_opt_cmd=1 swap_fn_leftctrl=1
-  '';
-
   boot.loader = {
+    timeout = 10;
+
     efi = {
       canTouchEfiVariables = false;
       efiSysMountPoint = "/boot";
@@ -40,6 +29,9 @@
 
       configurationLimit = 10;
 
+      timeoutStyle = "menu";
+      font = "${pkgs.grub2}/share/grub/unicode.pf2";
+
       dedsec-theme = {
         enable = true;
         style = "comments";
@@ -51,11 +43,7 @@
 
   networking.hostName = "DESKTOP-349210";
 
-  networking.networkmanager = {
-    enable = true;
-    # defaulted to wpa_sup.. eduroam is kind of crazy on iwd
-    # wifi.backend = "iwd";
-  };
+  networking.networkmanager.enable = true;
   time.timeZone = "Europe/Prague";
 
   services.printing.enable = true;
@@ -84,7 +72,6 @@
   programs.zsh.enable = true;
 
   programs.direnv = {
-    enable = true;
     nix-direnv = {
       enable = true;
     };
@@ -109,16 +96,12 @@
   services.mullvad-vpn.gui.enable = true;
 
   environment.systemPackages = with pkgs; [
-    vim
     wget
-    btrfs-progs
     brightnessctl
-    git
-    nixfmt
-    nixd
     zip
     unzip
     podman-compose
+    openssl
   ];
 
   fileSystems = {
@@ -153,5 +136,4 @@
   ];
 
   system.stateVersion = "26.11";
-
 }

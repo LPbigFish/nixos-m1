@@ -2,6 +2,21 @@
 
 with lib.hm.gvariant;
 
+let
+  mkDictionary = values:
+    mkArray "{sv}" (lib.mapAttrsToList (name: value:
+      mkDictionaryEntry [ name (mkVariant value) ]
+    ) values);
+
+  mkPipeline = name: effects: mkDictionary {
+    inherit name;
+    effects = mkArray "v" (map (effect:
+      mkVariant (mkDictionary (effect // {
+        params = mkDictionary effect.params;
+      }))
+    ) effects);
+  };
+in
 {
   dconf.settings = {
     "com/usebottles/bottles" = {
@@ -502,7 +517,6 @@ with lib.hm.gvariant;
       ] ];
       disable-user-extensions = false;
       disabled-extensions = [ "wintile-beyond@GrylledCheez.xyz" ];
-      enabled-extensions = [ "caffeine@patapon.info" "blur-my-shell@aunetx" "dash-to-dock@micxgx.gmail.com" "clipboard-indicator@tudmotu.com" "user-theme@gnome-shell-extensions.gcampax.github.com" "gsconnect@andyholmes.github.io" "add-to-desktop@tommimon.github.com" "emoji-copy@felipeftn" "lockscreen-extension@pratap.fastmail.fm" "CustomizeClockOnLockScreen@pratap.fastmail.fm" "appindicatorsupport@rgcjonas.gmail.com" "bluetooth-quick-connect@bjarosze.gmail.com" "hidetopbar@mathieu.bidon.ca" "tiling-assistant@leleat-on-github" ];
       favorite-apps = [ "Alacritty.desktop" "vivaldi-stable.desktop" "code.desktop" ];
       last-selected-power-profile = "power-saver";
       welcome-dialog-last-shown-version = "48.3";
@@ -518,12 +532,178 @@ with lib.hm.gvariant;
     };
 
     "org/gnome/shell/extensions/blur-my-shell" = {
-      settings-version = 2;
+      pipelines = mkArray "{sa{sv}}" (lib.mapAttrsToList (id: pipeline:
+        mkDictionaryEntry [ id pipeline ]
+      ) {
+        pipeline_default = mkPipeline "Default" [
+          {
+            type = "dual_kawase_blur";
+            id = "effect_000000000000";
+            params = {
+              unscaled_radius = 30;
+              brightness = mkDouble "0.59999999999999998";
+            };
+          }
+        ];
+        pipeline_migrated_dynamic_blur = mkPipeline "Migrated dynamic blur" [
+          {
+            type = "dual_kawase_blur";
+            id = "effect_migrated_dynamic_blur";
+            params = {
+              unscaled_radius = 60;
+              brightness = mkDouble "0.59999999999999998";
+            };
+          }
+        ];
+        pipeline_liquid_glass = mkPipeline "Liquid Glass" [
+          {
+            type = "luminosity";
+            id = "effect_liquid_glass_luminosity";
+            params.saturation_multiplicator = mkDouble "1.1000000000000001";
+          }
+          {
+            type = "refraction";
+            id = "effect_liquid_glass_refraction";
+            params.tint = 0;
+          }
+          {
+            type = "noise";
+            id = "effect_liquid_glass_noise";
+            params.noise = mkDouble "0.10000000000000001";
+          }
+        ];
+        pipeline_vapor_glass = mkPipeline "Vapor Glass" [
+          {
+            type = "luminosity";
+            id = "effect_vapor_glass_luminosity";
+            params.saturation_multiplicator = mkDouble "1.1000000000000001";
+          }
+          {
+            type = "wave";
+            id = "effect_vapor_glass_wave";
+            params = { };
+          }
+          {
+            type = "refraction";
+            id = "effect_vapor_glass_refraction";
+            params.tint = 0;
+          }
+          {
+            type = "noise";
+            id = "effect_vapor_glass_noise";
+            params.noise = mkDouble "0.10000000000000001";
+          }
+        ];
+        pipeline_classic_light_background = mkPipeline "Classic Light Background" [
+          {
+            type = "dual_kawase_blur";
+            id = "effect_classic_light_blur";
+            params = {
+              unscaled_radius = 30;
+              brightness = mkDouble "0.59999999999999998";
+            };
+          }
+          {
+            type = "color";
+            id = "effect_classic_light_color";
+            params = {
+              color = mkTuple [
+                (mkDouble "1.0") (mkDouble "1.0") (mkDouble "1.0") (mkDouble "0.25")
+              ];
+              blend_mode = 17;
+            };
+          }
+        ];
+        pipeline_classic_dark_background = mkPipeline "Classic Dark Background" [
+          {
+            type = "dual_kawase_blur";
+            id = "effect_classic_dark_blur";
+            params = {
+              unscaled_radius = 30;
+              brightness = mkDouble "0.59999999999999998";
+            };
+          }
+          {
+            type = "color";
+            id = "effect_classic_dark_color";
+            params = {
+              color = mkTuple [
+                (mkDouble "0.40000000000000002") (mkDouble "0.40000000000000002")
+                (mkDouble "0.40000000000000002") (mkDouble "0.34999999999999998")
+              ];
+              blend_mode = 17;
+            };
+          }
+        ];
+        pipeline_default_light = mkPipeline "Default (Light mode)" [
+          {
+            type = "dual_kawase_blur";
+            id = "effect_default_light_blur";
+            params = {
+              unscaled_radius = 30;
+              brightness = 1;
+            };
+          }
+          {
+            type = "color";
+            id = "effect_default_light_color";
+            params = {
+              color = mkTuple [
+                (mkDouble "1.0") (mkDouble "1.0") (mkDouble "1.0") (mkDouble "0.5")
+              ];
+              blend_mode = 3;
+            };
+          }
+        ];
+        pipeline_e48a4e9e-7fb5-48b4-b12c-7566cb55f92c = mkPipeline "Better liquid" [
+          {
+            type = "refraction";
+            id = "effect_5da981fb-0817-43fa-bdb2-34cb2f9e1b2f";
+            params = {
+              strength = mkDouble "0.33000000000000002";
+              blur_radius = 11;
+              falloff = mkDouble "1.25";
+              tint = mkDouble "0.51000000000000001";
+              rgb_fringing = mkDouble "0.13";
+              rim_width = mkDouble "4.7999999999999998";
+              refraction_style = 0;
+              specular_strength = mkDouble "0.10000000000000001";
+              edge_size = 32;
+              reach = 0;
+              gloss = 1;
+              tint_color = mkTuple [
+                (mkDouble "0.36862745881080627") (mkDouble "0.36078432202339172")
+                (mkDouble "0.39215686917304993") (mkDouble "1.0")
+              ];
+            };
+          }
+        ];
+        pipeline_276f4dd0-cc4a-48db-ac4b-54a1e185b8b3 = mkPipeline "Liquid Dock" [
+          {
+            type = "refraction";
+            id = "effect_0f8a5c69-1711-4a26-b6db-3faf61b5f328";
+            params = {
+              strength = 1;
+              blur_radius = 8;
+              edge_size = 12;
+              rim_width = mkDouble "2.1499999999999999";
+              tint = mkDouble "0.01";
+            };
+          }
+        ];
+      });
+      rounded-blur-found = false;
+      settings-version = 10;
     };
 
     "org/gnome/shell/extensions/blur-my-shell/appfolder" = {
-      brightness = mkDouble "0.6";
-      sigma = 30;
+      pipeline = "pipeline_migrated_dynamic_blur";
+    };
+
+    "org/gnome/shell/extensions/blur-my-shell/applications" = {
+      pipeline = "pipeline_default";
+      pipeline-dark = "pipeline_default";
+      pipeline-light = "pipeline_default_light";
     };
 
     "org/gnome/shell/extensions/blur-my-shell/coverflow-alt-tab" = {
@@ -532,11 +712,13 @@ with lib.hm.gvariant;
 
     "org/gnome/shell/extensions/blur-my-shell/dash-to-dock" = {
       blur = true;
-      brightness = mkDouble "0.6";
-      pipeline = "pipeline_default_rounded";
-      sigma = 30;
-      static-blur = true;
+      pipeline = "pipeline_276f4dd0-cc4a-48db-ac4b-54a1e185b8b3";
+      pipeline-auto-mode = false;
+      pipeline-dark = "pipeline_default";
+      pipeline-light = "pipeline_default_light";
+      static-blur = false;
       style-dash-to-dock = 0;
+      unblur-in-overview = false;
     };
 
     "org/gnome/shell/extensions/blur-my-shell/lockscreen" = {
@@ -548,15 +730,18 @@ with lib.hm.gvariant;
     };
 
     "org/gnome/shell/extensions/blur-my-shell/panel" = {
-      brightness = mkDouble "0.6";
       pipeline = "pipeline_default";
-      sigma = 30;
     };
 
     "org/gnome/shell/extensions/blur-my-shell/popup" = {
       blur = true;
       override-background = true;
-      static-blur = true;
+      pipeline = "pipeline_e48a4e9e-7fb5-48b4-b12c-7566cb55f92c";
+      pipeline-auto-mode = false;
+      pipeline-dark = "pipeline_default";
+      pipeline-light = "pipeline_default_light";
+      screenshot-corner-radius = 36;
+      static-blur = false;
     };
 
     "org/gnome/shell/extensions/blur-my-shell/screenshot" = {
@@ -564,8 +749,7 @@ with lib.hm.gvariant;
     };
 
     "org/gnome/shell/extensions/blur-my-shell/window-list" = {
-      brightness = mkDouble "0.6";
-      sigma = 30;
+      pipeline = "pipeline_migrated_dynamic_blur";
     };
 
     "org/gnome/shell/extensions/caffeine" = {
@@ -598,7 +782,7 @@ with lib.hm.gvariant;
       apply-custom-theme = true;
       background-opacity = mkDouble "0.0";
       custom-background-color = false;
-      custom-theme-shrink = true;
+      custom-theme-shrink = false;
       dash-max-icon-size = 40;
       disable-overview-on-startup = false;
       dock-position = "BOTTOM";

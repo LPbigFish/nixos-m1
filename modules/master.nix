@@ -10,7 +10,7 @@
       clean = {
         enable = true;
         dates = "daily";
-        extraArgs = "--keep 1 --no-gcroots";
+        extraArgs = "--keep 10 --keep-since 30d --no-gcroots";
       };
       flake = "/etc/nixos";
     };
@@ -25,7 +25,7 @@
   };
 
   environment.shellAliases = {
-    nhclean = "nh clean all -k 1 --no-gcroots";
+    nhclean = "nh clean all --keep 10 --keep-since 30d --no-gcroots";
   };
 
   services.timesyncd.enable = lib.mkDefault true;
@@ -50,7 +50,6 @@
   environment.systemPackages = lib.mkBefore (
     with pkgs;
     [
-      nano
       vim
       btop
       nixfmt
@@ -59,20 +58,16 @@
       git
       git-lfs
       screen
-      sudo-rs
       nvd
       pciutils
       inetutils
       my-neovim
       tldr
       jq
-      nixos-firewall-tool
     ]
   );
 
   networking.nameservers = [
-    #"2606:4700:4700::1111"
-    #"2606:4700:4700::1001"
     "1.1.1.1"
     "8.8.8.8"
   ];
