@@ -518,12 +518,22 @@ with lib.hm.gvariant;
     };
 
     "org/gnome/shell/extensions/blur-my-shell" = {
-      settings-version = 2;
+      rounded-blur-found = false;
+      # Version 10 keys below reflect the extension's migrated state. The
+      # "pipelines" tree (custom "Liquid Dock" / "Better liquid" entries) is
+      # extension-managed GVariant that the dconf format cannot express, so it
+      # stays undeclared and untouched on activation.
+      settings-version = 10;
     };
 
     "org/gnome/shell/extensions/blur-my-shell/appfolder" = {
-      brightness = mkDouble "0.6";
-      sigma = 30;
+      pipeline = "pipeline_migrated_dynamic_blur";
+    };
+
+    "org/gnome/shell/extensions/blur-my-shell/applications" = {
+      pipeline = "pipeline_default";
+      pipeline-dark = "pipeline_default";
+      pipeline-light = "pipeline_default_light";
     };
 
     "org/gnome/shell/extensions/blur-my-shell/coverflow-alt-tab" = {
@@ -532,11 +542,13 @@ with lib.hm.gvariant;
 
     "org/gnome/shell/extensions/blur-my-shell/dash-to-dock" = {
       blur = true;
-      brightness = mkDouble "0.6";
-      pipeline = "pipeline_default_rounded";
-      sigma = 30;
-      static-blur = true;
+      pipeline = "pipeline_276f4dd0-cc4a-48db-ac4b-54a1e185b8b3";
+      pipeline-auto-mode = false;
+      pipeline-dark = "pipeline_default";
+      pipeline-light = "pipeline_default_light";
+      static-blur = false;
       style-dash-to-dock = 0;
+      unblur-in-overview = false;
     };
 
     "org/gnome/shell/extensions/blur-my-shell/lockscreen" = {
@@ -548,15 +560,18 @@ with lib.hm.gvariant;
     };
 
     "org/gnome/shell/extensions/blur-my-shell/panel" = {
-      brightness = mkDouble "0.6";
       pipeline = "pipeline_default";
-      sigma = 30;
     };
 
     "org/gnome/shell/extensions/blur-my-shell/popup" = {
       blur = true;
       override-background = true;
-      static-blur = true;
+      pipeline = "pipeline_e48a4e9e-7fb5-48b4-b12c-7566cb55f92c";
+      pipeline-auto-mode = false;
+      pipeline-dark = "pipeline_default";
+      pipeline-light = "pipeline_default_light";
+      screenshot-corner-radius = 36;
+      static-blur = false;
     };
 
     "org/gnome/shell/extensions/blur-my-shell/screenshot" = {
@@ -564,8 +579,7 @@ with lib.hm.gvariant;
     };
 
     "org/gnome/shell/extensions/blur-my-shell/window-list" = {
-      brightness = mkDouble "0.6";
-      sigma = 30;
+      pipeline = "pipeline_migrated_dynamic_blur";
     };
 
     "org/gnome/shell/extensions/caffeine" = {
@@ -598,7 +612,7 @@ with lib.hm.gvariant;
       apply-custom-theme = true;
       background-opacity = mkDouble "0.0";
       custom-background-color = false;
-      custom-theme-shrink = true;
+      custom-theme-shrink = false;
       dash-max-icon-size = 40;
       disable-overview-on-startup = false;
       dock-position = "BOTTOM";

@@ -43,6 +43,12 @@
 
       configurationLimit = 10;
 
+      # Aurora's boot-splash defaults grub.font to null, which removes the
+      # loadfont/gfxterm block from grub.cfg. GRUB only draws themes inside
+      # gfxterm, so restore the font to render the DedSec theme. This is the
+      # same unicode.pf2 the pre-Aurora config shipped as converted-font.pf2.
+      font = "${pkgs.grub2}/share/grub/unicode.pf2";
+
       dedsec-theme = {
         enable = true;
         style = "comments";
