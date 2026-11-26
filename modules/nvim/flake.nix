@@ -19,9 +19,9 @@
           packages.default = config.neovim;
         }
       );
-      overlay = final: prev: {
+      overlay = final: _prev: {
         my-neovim = (nvf.lib.neovimConfiguration {
-          pkgs = final; 
+          pkgs = final;
           modules = [ ./nvf-configuration.nix ];
         }).neovim;
       };

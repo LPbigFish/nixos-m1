@@ -5,7 +5,6 @@
   ...
 }:
 let
-  # Change this to the short name of your existing macOS account.
   username = "lpbigfish";
   lightWallpaper = builtins.fetchurl {
     url = "https://raw.githubusercontent.com/LPbigFish/nixos/refs/heads/main/.github/images/image_uw.jpg";
@@ -20,7 +19,6 @@ let
     modules = [
       ./modules/nvim/nvf-configuration.nix
       {
-        # Neovim uses macOS's pbcopy/pbpaste instead of Wayland tools.
         vim.clipboard.providers.wl-copy.enable = lib.mkForce false;
       }
     ];
@@ -68,7 +66,6 @@ in
     };
   };
 
-  # Homebrew itself must already be installed before the first activation.
   homebrew = {
     enable = true;
     onActivation = {
@@ -170,7 +167,7 @@ in
         };
         zed-editor = {
           enable = true;
-          package = null; # Installed as a native application by Homebrew.
+          package = null;
           extensions = [
             "nix"
             "elixir"

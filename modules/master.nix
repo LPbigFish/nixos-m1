@@ -8,8 +8,7 @@
     nh = {
       enable = true;
       clean = {
-        # Keep recovery generations throughout the Asahi -> Aurora migration.
-        enable = false;
+        enable = true;
         dates = "daily";
         extraArgs = "--keep 10 --keep-since 30d --no-gcroots";
       };
@@ -51,7 +50,6 @@
   environment.systemPackages = lib.mkBefore (
     with pkgs;
     [
-      nano
       vim
       btop
       nixfmt
@@ -60,20 +58,16 @@
       git
       git-lfs
       screen
-      sudo-rs
       nvd
       pciutils
       inetutils
       my-neovim
       tldr
       jq
-      nixos-firewall-tool
     ]
   );
 
   networking.nameservers = [
-    #"2606:4700:4700::1111"
-    #"2606:4700:4700::1001"
     "1.1.1.1"
     "8.8.8.8"
   ];

@@ -1,5 +1,5 @@
 {
-  description = "A very basic flake";
+  description = "Aurora NixOS, Home Manager, and nix-darwin for Apple Silicon";
 
   inputs = {
     aurora.url = "github:aurora-silicon/nixos-aurora/channel-testing";
@@ -47,30 +47,14 @@
 
       nixosConfigurations.m1 = nixpkgs.lib.nixosSystem {
         inherit system;
+        specialArgs = { inherit inputs; };
 
         modules = [
-          inputs.apple-silicon.nixosModules.default
-          inputs.aurora.nixosModules.default
-          inputs.aurora.nixosModules.installed
-
-          inputs.dedsec-grub-theme.nixosModule
           ./configuration.nix
 
           {
-            nixpkgs.overlays = [
-              inputs.apple-silicon.overlays.default
-              inputs.aurora.overlays.default
-            ]
-            ++ overlays;
-
+            nixpkgs.overlays = overlays;
             nixpkgs.config.allowUnfree = true;
-
-            aurora.desktop = "gnome";
-            aurora.update.flake = "/etc/nixos#m1";
-            aurora.stage2.requiredBoards = [ "j293" ];
-
-            boot.loader.grub.timeoutStyle = "menu";
-            boot.loader.timeout = 10;
           }
         ];
       };

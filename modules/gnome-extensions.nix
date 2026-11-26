@@ -7,8 +7,6 @@ let
     clipboard-indicator
     user-themes
     gsconnect
-    #wifi-qrcode
-    #status-area-horizontal-spacing
     add-to-desktop
     emoji-copy
     lockscreen-extension
@@ -16,7 +14,6 @@ let
     appindicator
     bluetooth-quick-connect
     hide-top-bar
-    #tiling-shell
     tiling-assistant
   ];
 
